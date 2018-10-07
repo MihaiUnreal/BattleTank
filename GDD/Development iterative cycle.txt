@@ -1,0 +1,13 @@
+1) Create the world
+
+2) Create the tank
+
+3) Add controlls
+
+4) Add AI or second Player
+
+5) Add UI
+
+6) Enhance the world
+
+7) Repeat

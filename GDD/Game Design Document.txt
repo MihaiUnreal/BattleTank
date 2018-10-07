@@ -1,0 +1,32 @@
+# CONCEPT
+* Have several tanks that battle each other.
+* It all happens in an open field
+* It is fun to play
+
+# RULES
+* The player controlls one tank
+* The player and the other AI controller tanks can move freely
+* The player wins if he/she manages to destroy all the other tanks without being destroyed
+* The player looses the instant his/her tank is destroyed
+* The player can play against AI tanks or another player
+
+
+# REQUIREMENTS
+* C++ code + blueprints for logic & assets
+* The game atmosphere shall be enhanced by visual effects & sounds
+* Focus on tank elements - the tank shall have static & moving parts, textures, effects
+
+# Must have in the game:
+* Game menus
+* Save game system
+* HUD
+* Multiple models of tanks
+* Different levels/maps
+* Easy way to control the tank - W, A, S, D and mouse
+* Different objects to shoot: shells, petards, fire
+* Pickaups like: ammo, health packs, temporary shileds
+* Basic AI for enemy tanks
+* Obstacles on terrain like: barricades, hills, trees, water pods
+* Visual effects: shoot effect, explosion, fire, steam, fog, rain
+dirt tracks after tank (while moving)
+* Day - night cycle

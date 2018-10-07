@@ -1,0 +1,72 @@
+* game menu
+
+* save game system
+
+* HUD in the game (health bar, ammo bar, etc.)
+
+* Menu to customize the tank(s)
+
+* Different tank models - tiers
+
+a) slow, low on health, average ammo & damage
+
+b) faster, medium health, better ammo & damage
+
+c) fastest, best health, best ammo, most damage
+
+* Different levels/maps to choose from (environment of the game)
+
+* Tank control system should be realistic
+
+* Movement of the tank using W, A, S, D
+
+* Aiming using the mouse
+
+* Shooting using mouse click
+
+* Change camera in game: top camera, left/right camera, inside tank camera, above camera
+
+* Sniper mode when preparing to target & shoot
+
+* Different game modes:
+
+a) just shoot to destroy (only your tank on the battlefield)
+
+b) battle with a number of bot tanks(AI controlled)
+
+c) battle with real players
+
+d) catch the flag mode
+
+e) stop the bomb first mode
+
+f) fly mode (just propel your tank in the air using your turret/barrel/gun)
+
+* Different modes to do damage: shells, petards, fire shots
+
+* Pickups placed on battlefield: ammo, health packs, temporary shields
+
+* Advanced AI for enemy tanks
+
+* Interesting terrain were the gameplay takes place - obstacles
+
+to help hide from enemies; explosives - to help infringe greater damage to the enemies
+
+* Military barricades
+
+* Lakes or water pods - to enhance the natural environment
+
+* Other natural elements like: trees, bushes, rocks are very welcome
+
+* Visual effects: shoot effect, explosions (target is hit), fire, steam, dust, fog, rain, solar flare
+Maybe even dirt tracks after the tank
+
+* Day - night cycle
+
+* Other elements to enhance gameplay:
+
+a) teleportation gates
+
+b) tank multiplier - if your tank gets one of these, there are spawned up to 3 more tanks in your command
+
+c) other damage mechanics: laser beams, grenades, invisible bombs, etc.
