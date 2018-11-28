@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
+//#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "TankPlayerController.generated.h" // must be the last include
+
+class ATank;
 
 /**
  * 
@@ -21,7 +22,7 @@ public:
 
 
 private:
-	void SetupUI();
+	//void SetupUI();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -36,6 +37,15 @@ private:
 	bool CalcSightRayHitLocation(FVector& OutHitLocation) const;
 
 	ATank* GetControlledTank() const;
+
+	UPROPERTY(EditAnywhere)
+	float CrosshairXFactor = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float CrosshairYFactor = 0.333f;
+
+	UPROPERTY(EditAnywhere)
+	float LineTraceRange = 1000000.0f;
 
 	//TSubclassOf<class UUserWidget> m_PlayerUIClass;
 	//UWidget* m_CrosshairWidget = nullptr;

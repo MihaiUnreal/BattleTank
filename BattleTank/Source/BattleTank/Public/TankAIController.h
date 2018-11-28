@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "Tank.h"
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"
+
+class ATank;
 
 /**
  * 
@@ -19,7 +20,9 @@ private:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	ATank * GetControlledTank() const;
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
-	ATank * GetPlayerTank() const;
+	ATank* GetControlledTank() const;
+	ATank* GetPlayerTank() const;
 };

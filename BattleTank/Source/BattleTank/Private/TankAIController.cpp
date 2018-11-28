@@ -2,7 +2,13 @@
 
 #include "TankAIController.h"
 #include "Engine/World.h"
+#include "Tank.h"
 #include <assert.h>
+
+//#define DEBUG_LINE
+#ifdef DEBUG_LINE
+#include "DrawDebugHelpers.h"
+#endif
 
 // Called when the game starts or when spawned
 void ATankAIController::BeginPlay()
@@ -34,6 +40,33 @@ void ATankAIController::BeginPlay()
 	}
 }
 
+// Called every frame
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	ATank* ControlledTank = GetControlledTank();
+
+	if (ControlledTank)
+	{
+		// TODO move towards the player
+
+		// aim towards the player tank
+		ATank* PlayerTank = GetPlayerTank();
+
+		if (PlayerTank)
+		{
+			ControlledTank->AimAt(PlayerTank->GetActorLocation());
+		}
+
+		// Fire if ready
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TankAIController failed to GET the player tank!"));
+	}
+}
+
 ATank* ATankAIController::GetControlledTank() const
 {
 	assert(GetPawn() != nullptr);
@@ -43,7 +76,7 @@ ATank* ATankAIController::GetControlledTank() const
 	return AITank;
 }
 
-ATank * ATankAIController::GetPlayerTank() const
+ATank* ATankAIController::GetPlayerTank() const
 {
 	assert(GetWorld() != nullptr);
 
@@ -53,8 +86,6 @@ ATank * ATankAIController::GetPlayerTank() const
 
 	if (PlayerController)
 	{
-		assert(GetPawn() != nullptr);
-
 		PlayerTank = Cast<ATank>(PlayerController->GetPawn());
 	}
 
