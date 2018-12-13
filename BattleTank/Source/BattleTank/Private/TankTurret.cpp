@@ -11,7 +11,7 @@ void UTankTurret::Rotate(float RelativeSpeed)
 
 	// Move the barrel the right amount this frame
 
-	// rotate all around, no clamping
+	// rotate all around
 	float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, +1.0f);
 	float RotationChange = ClampedRelativeSpeed * MaxDegreesPerSecond * GetWorld()->DeltaTimeSeconds;
 	float NewRotation = RelativeRotation.Yaw + RotationChange;

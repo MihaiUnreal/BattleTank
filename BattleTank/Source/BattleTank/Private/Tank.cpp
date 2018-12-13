@@ -6,6 +6,7 @@
 #include "Engine/World.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include <assert.h>
 
 // Sets default values
@@ -52,8 +53,10 @@ void ATank::SetTurretReference(UTankTurret* TurretToSet)
 // Called from Blueprint
 void ATank::Fire()
 {
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
 	// Spawn a projectile at the socket location on the barrel
-	if (Barrel)
+	if (Barrel && isReloaded)
 	{
 		assert(GetWorld() != nullptr);
 
@@ -66,6 +69,8 @@ void ATank::Fire()
 		{
 			Projectile->LaunchProjectile(LaunchSpeed);
 		}
+
+		LastFireTime = FPlatformTime::Seconds();
 	}
 }
 

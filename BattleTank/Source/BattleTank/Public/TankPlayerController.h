@@ -38,13 +38,13 @@ private:
 
 	ATank* GetControlledTank() const;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairXFactor = 0.5f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairYFactor = 0.333f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000.0f;
 
 	//TSubclassOf<class UUserWidget> m_PlayerUIClass;
