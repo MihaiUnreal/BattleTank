@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -15,7 +15,7 @@ AProjectile::AProjectile()
 	// create the ProjectileMovementComponent (as child of Tank)
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Projectile Movement Component"));
 
-	if (ProjectileMovementComponent)
+	if (ensure(ProjectileMovementComponent))
 	{
 		ProjectileMovementComponent->bAutoActivate = false;
 	}
@@ -37,12 +37,12 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::LaunchProjectile(float Speed)
 {
-	assert(GetWorld() != nullptr);
+	ensure(GetWorld() != nullptr);
 
 	float Time = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("%f : Projectile fires at %f !"), Time, Speed);
+	//UE_LOG(LogTemp, Warning, TEXT("%f : Projectile fires at %f !"), Time, Speed);
 
-	if (ProjectileMovementComponent)
+	if (ensure(ProjectileMovementComponent))
 	{
 		ProjectileMovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 		ProjectileMovementComponent->Activate();

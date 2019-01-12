@@ -1,8 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "TankPlayerController.h"
-#include "Engine/World.h"
+#include "TankAimingComponent.h"
 #include "Tank.h"
+#include "Engine/World.h"
 
 //#include "PlayerUI.h"
 //#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
@@ -40,11 +41,9 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("TankPlayerController Begin Play"));
-
 	auto ControlledTank = GetControlledTank();
 
-	if (ControlledTank)
+	if (ensure(ControlledTank))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TankPlayerController possesing %s"), *(ControlledTank->GetName()));
 	}
@@ -60,6 +59,21 @@ void ATankPlayerController::BeginPlay()
 	//{
 	//	m_CrosshairWidget = PlayerUIWidget->GetWidgetFromName("AimPoint");
 	//}
+
+	if (ensure(ControlledTank))
+	{
+		UTankAimingComponent* TankAimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+
+		if (ensure(TankAimingComponent))
+		{
+			// broadcast event FoundAimingComponent
+			FoundAimingComponent(TankAimingComponent);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("TankPlayerController can not find TankAimingComponent at Begin Play!"));
+		}
+	}
 }
 
 // Called every frame
@@ -83,7 +97,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	{
 		ATank* ControlledTank = GetControlledTank();
 
-		if (ControlledTank)
+		if (ensure(ControlledTank))
 		{
 			ControlledTank->AimAt(OutHitLocation);
 		}
@@ -92,7 +106,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 bool ATankPlayerController::CalcSightRayHitLocation(FVector& OutHitLocation) const
 {
-	assert(GetWorld() != nullptr);
+	ensure(GetWorld() != nullptr);
 	//assert(m_CrosshairWidget != nullptr);
 
 	//FGeometry Geometry = m_CrosshairWidget->GetCachedGeometry();
@@ -164,7 +178,9 @@ bool ATankPlayerController::CalcSightRayHitLocation(FVector& OutHitLocation) con
 
 ATank* ATankPlayerController::GetControlledTank() const
 {
-	assert(GetPawn() != nullptr);
+	//UE_LOG(LogTemp, Warning, TEXT("C++ : TANK PLAYER CONTROLLER - GetControlledTank"), *GetName());
+
+	ensure(GetPawn() != nullptr);
 
 	ATank* PlayerTank = Cast<ATank>(GetPawn());
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #pragma once
 
@@ -8,6 +8,14 @@
 
 class UTankBarrel;
 class UTankTurret;
+
+UENUM()
+enum class EFiringStatus : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
 
 // Holds Tank Aiming info like barrel properties and methods
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -19,12 +27,18 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
+
 	void AimAt(const FVector& HitLocation, float LaunchSpeed);
 
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-	void SetTurretReference(UTankTurret* TurretToSet);
+	UTankBarrel* GetBarrel();
+	UTankTurret* GetTurret();
 
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = State)
+	EFiringStatus FiringStatus = EFiringStatus::Locked;
+
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	

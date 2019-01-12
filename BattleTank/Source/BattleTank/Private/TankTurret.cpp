@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "TankTurret.h"
 #include "Engine/World.h"
@@ -7,7 +7,7 @@
 
 void UTankTurret::Rotate(float RelativeSpeed)
 {
-	assert(GetWorld() != nullptr);
+	ensure(GetWorld() != nullptr);
 
 	// Move the barrel the right amount this frame
 

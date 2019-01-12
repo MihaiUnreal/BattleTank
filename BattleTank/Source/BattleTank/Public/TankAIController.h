@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #pragma once
 
@@ -16,6 +16,11 @@ class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+public:
+	// the distance the AI tank is allowed to move towards the plaer tank
+	UPROPERTY(EditAnywhere, Category = Setup)
+	float AcceptanceRadius = 3000.0f; // in cm
+
 private:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

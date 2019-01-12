@@ -1,12 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "Tank.h"
 #include "TankBarrel.h"
-#include "TankTurret.h"
-#include "Engine/World.h"
 #include "Projectile.h"
 #include "TankAimingComponent.h"
-#include "TankMovementComponent.h"
+#include "Engine/World.h"
 #include <assert.h>
 
 // Sets default values
@@ -14,39 +12,15 @@ ATank::ATank()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	// create the TankAimingComponent (as child of Tank)
-	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 }
 
 void ATank::AimAt(const FVector& HitLocation)
 {
-	if (TankAimingComponent)
+	if (!TankAimingComponent) return;
+
+	if (ensure(TankAimingComponent))
 	{
 		TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-	}
-}
-
-// Called from blueprint
-void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	if (!BarrelToSet) return;
-
-	if (TankAimingComponent)
-	{
-		TankAimingComponent->SetBarrelReference(BarrelToSet);
-	}
-	Barrel = BarrelToSet;
-}
-
-// Called from Blueprint
-void ATank::SetTurretReference(UTankTurret* TurretToSet)
-{
-	if (!TurretToSet) return;
-
-	if (TankAimingComponent)
-	{
-		TankAimingComponent->SetTurretReference(TurretToSet);
 	}
 }
 
@@ -55,22 +29,28 @@ void ATank::Fire()
 {
 	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 
+	if (!TankAimingComponent) return;
+
 	// Spawn a projectile at the socket location on the barrel
-	if (Barrel && isReloaded)
+	if (isReloaded)
 	{
-		assert(GetWorld() != nullptr);
+		ensure(GetWorld() != nullptr);
+		UTankBarrel* Barrel = TankAimingComponent->GetBarrel();
 
-		FVector ProjectileLocation = Barrel->GetSocketLocation(FName("Projectile"));
-		FRotator ProjectileRotation = Barrel->GetSocketRotation(FName("Projectile"));
-
-		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileLocation, ProjectileRotation);
-
-		if (Projectile)
+		if (ensure(Barrel))
 		{
-			Projectile->LaunchProjectile(LaunchSpeed);
-		}
+			FVector ProjectileLocation = Barrel->GetSocketLocation(FName("Projectile"));
+			FRotator ProjectileRotation = Barrel->GetSocketRotation(FName("Projectile"));
 
-		LastFireTime = FPlatformTime::Seconds();
+			AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, ProjectileLocation, ProjectileRotation);
+
+			if (ensure(Projectile))
+			{
+				Projectile->LaunchProjectile(LaunchSpeed);
+			}
+
+			LastFireTime = FPlatformTime::Seconds();
+		}
 	}
 }
 
@@ -78,7 +58,9 @@ void ATank::Fire()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// get the Aiming Component instance reference (from the blueprint)
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>();
 }
 
 // Called to bind functionality to input

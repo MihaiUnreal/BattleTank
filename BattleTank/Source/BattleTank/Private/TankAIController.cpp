@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "TankAIController.h"
 #include "Engine/World.h"
@@ -17,9 +17,9 @@ void ATankAIController::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("TankAIController Begin Play"));
 
-	auto ControlledTank = GetControlledTank();
+	ATank* ControlledTank = GetControlledTank();
 
-	if (ControlledTank)
+	if (ensure(ControlledTank))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController possesing %s"), *(ControlledTank->GetName()));
 	}
@@ -28,9 +28,9 @@ void ATankAIController::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController not possesing a tank!"));
 	}
 
-	auto PlayerTank = GetPlayerTank();
+	ATank* PlayerTank = GetPlayerTank();
 
-	if (PlayerTank)
+	if (ensure(PlayerTank))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController found player tank %s"), *(PlayerTank->GetName()));
 	}
@@ -47,18 +47,19 @@ void ATankAIController::Tick(float DeltaTime)
 
 	ATank* ControlledTank = GetControlledTank();
 
-	if (ControlledTank)
+	if (ensure(ControlledTank))
 	{
-		// TODO move towards the player
-
 		// aim towards the player tank
 		ATank* PlayerTank = GetPlayerTank();
 
-		if (PlayerTank)
+		// move towards the player
+		MoveToActor(PlayerTank, AcceptanceRadius);
+
+		if (ensure(PlayerTank))
 		{
 			ControlledTank->AimAt(PlayerTank->GetActorLocation());
 
-			ControlledTank->Fire(); //TODO
+			ControlledTank->Fire();
 		}
 	}
 	else
@@ -69,7 +70,7 @@ void ATankAIController::Tick(float DeltaTime)
 
 ATank* ATankAIController::GetControlledTank() const
 {
-	assert(GetPawn() != nullptr);
+	ensure(GetPawn() != nullptr);
 
 	ATank* AITank = Cast<ATank>(GetPawn());
 
@@ -78,13 +79,13 @@ ATank* ATankAIController::GetControlledTank() const
 
 ATank* ATankAIController::GetPlayerTank() const
 {
-	assert(GetWorld() != nullptr);
+	ensure(GetWorld() != nullptr);
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
 	ATank* PlayerTank = nullptr;
 
-	if (PlayerController)
+	if (ensure(PlayerController))
 	{
 		PlayerTank = Cast<ATank>(PlayerController->GetPawn());
 	}

@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright ADVANCED Co.
 
 #include "TankAimingComponent.h"
-#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
 #include "Engine/World.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include <assert.h>
 
 // Sets default values for this component's properties
@@ -17,19 +17,25 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
+// Called from blueprint
+void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
+{
+	if (!ensure(BarrelToSet) || !ensure(TurretToSet)) return;
+
+	Barrel = BarrelToSet;
+	Turret = TurretToSet;
+}
 
 void UTankAimingComponent::AimAt(const FVector& HitLocation, float LaunchSpeed)
 {
-	assert(GetWorld() != nullptr);
-	assert(GetOwner() != nullptr);
-	assert(Barrel != nullptr);
+	ensure(GetWorld() != nullptr);
+	ensure(GetOwner() != nullptr);
+	ensure(Barrel != nullptr);
 
 	//UE_LOG(LogTemp, Warning, TEXT("%s AimingComponent aiming at %s from %s"), *(GetOwner()->GetName()), *(HitLocation.ToString()), *(Barrel->GetComponentLocation().ToString()));
 
 	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-	//FCollisionResponseParams ResponseParam;
-	//TArray<AActor*> ActorsToIgnore;
 
 	bool HaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
 	(
@@ -67,31 +73,31 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation, float LaunchSpeed)
 
 void UTankAimingComponent::MoveBarrelAndTurret(const FVector& AimDirection)
 {
-	// work-out the difference between the current barrel rotation and AimDirection (as rotation)
-	FRotator BarrelRotator = Barrel->GetForwardVector().Rotation();
-	FRotator AimAsRotator = AimDirection.Rotation();
-	FRotator DeltaRotator = AimAsRotator - BarrelRotator;
+	if (ensure(Barrel))
+	{
+		// work-out the difference between the current barrel rotation and AimDirection (as rotation)
+		FRotator BarrelRotator = Barrel->GetForwardVector().Rotation();
+		FRotator AimAsRotator = AimDirection.Rotation();
+		FRotator DeltaRotator = AimAsRotator - BarrelRotator;
 
-	//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator %s"), *AimAsRotator.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator %s"), *AimAsRotator.ToString());
 
-	Barrel->Elevate(DeltaRotator.Pitch);
+		Barrel->Elevate(DeltaRotator.Pitch);
 
-	Turret->Rotate(DeltaRotator.Yaw);
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
+UTankBarrel* UTankAimingComponent::GetBarrel()
 {
-	if (!BarrelToSet) return;
-
-	Barrel = BarrelToSet;
+	return Barrel;
 }
 
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
+UTankTurret* UTankAimingComponent::GetTurret()
 {
-	if (!TurretToSet) return;
-
-	Turret = TurretToSet;
+	return Turret;
 }
+
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
