@@ -1,9 +1,8 @@
 // Copyright ADVANCED Co.
 
 #include "TankAIController.h"
+#include "TankAimingComponent.h"
 #include "Engine/World.h"
-#include "Tank.h"
-#include <assert.h>
 
 //#define DEBUG_LINE
 #ifdef DEBUG_LINE
@@ -17,7 +16,7 @@ void ATankAIController::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("TankAIController Begin Play"));
 
-	ATank* ControlledTank = GetControlledTank();
+	APawn* ControlledTank = GetControlledTank();
 
 	if (ensure(ControlledTank))
 	{
@@ -28,7 +27,7 @@ void ATankAIController::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController not possesing a tank!"));
 	}
 
-	ATank* PlayerTank = GetPlayerTank();
+	APawn* PlayerTank = GetPlayerTank();
 
 	if (ensure(PlayerTank))
 	{
@@ -45,21 +44,26 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	ATank* ControlledTank = GetControlledTank();
+	APawn* ControlledTank = GetControlledTank();
 
 	if (ensure(ControlledTank))
 	{
 		// aim towards the player tank
-		ATank* PlayerTank = GetPlayerTank();
+		APawn* PlayerTank = GetPlayerTank();
 
 		// move towards the player
 		MoveToActor(PlayerTank, AcceptanceRadius);
 
 		if (ensure(PlayerTank))
 		{
-			ControlledTank->AimAt(PlayerTank->GetActorLocation());
+			UTankAimingComponent* TankAimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
 
-			ControlledTank->Fire();
+			if (ensure(TankAimingComponent))
+			{
+				TankAimingComponent->AimAt(PlayerTank->GetActorLocation());
+
+				TankAimingComponent->Fire();
+			}
 		}
 	}
 	else
@@ -68,29 +72,22 @@ void ATankAIController::Tick(float DeltaTime)
 	}
 }
 
-ATank* ATankAIController::GetControlledTank() const
+APawn* ATankAIController::GetControlledTank() const
 {
 	ensure(GetPawn() != nullptr);
 
-	ATank* AITank = Cast<ATank>(GetPawn());
-
-	return AITank;
+	return GetPawn();
 }
 
-ATank* ATankAIController::GetPlayerTank() const
+APawn* ATankAIController::GetPlayerTank() const
 {
 	ensure(GetWorld() != nullptr);
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
-	ATank* PlayerTank = nullptr;
+	ensure(PlayerController != nullptr);
 
-	if (ensure(PlayerController))
-	{
-		PlayerTank = Cast<ATank>(PlayerController->GetPawn());
-	}
-
-	return PlayerTank;
+	return PlayerController->GetPawn();
 }
 
 

@@ -3,7 +3,6 @@
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/World.h"
-#include <assert.h>
 
 // Sets default values
 AProjectile::AProjectile()

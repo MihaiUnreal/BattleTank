@@ -8,9 +8,10 @@
 
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 
 UENUM()
-enum class EFiringStatus : uint8
+enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
@@ -30,14 +31,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
-	void AimAt(const FVector& HitLocation, float LaunchSpeed);
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	void Fire();
 
-	UTankBarrel* GetBarrel();
-	UTankTurret* GetTurret();
+	void AimAt(const FVector& HitLocation);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = State)
-	EFiringStatus FiringStatus = EFiringStatus::Locked;
+	EFiringState FiringState = EFiringState::Reloading;
+
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float LaunchSpeed = 4000;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	float ReloadTimeInSeconds = 3.0f;
+
+	float LastFireTime = 0.0f;
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -48,7 +60,10 @@ protected:
 private:
 	void MoveBarrelAndTurret(const FVector& AimDirection);
 
+	bool IsBarrelMoving();
+
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 
+	FVector AimDirection;
 };

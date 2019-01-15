@@ -7,7 +7,6 @@
 //#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 #include "TankPlayerController.generated.h" // must be the last include
 
-class ATank;
 class UTankAimingComponent;
 
 /**
@@ -23,7 +22,7 @@ public:
 
 protected:
 	UFUNCTION(BlueprintCallable, Category = Setup)
-	ATank* GetControlledTank() const;
+	APawn* GetControlledTank() const;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Setup)
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
