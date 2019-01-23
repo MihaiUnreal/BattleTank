@@ -8,7 +8,6 @@
 //#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 //#include "Runtime/UMG/Public/Blueprint/WidgetLayoutLibrary.h"
 //#include "Runtime/UMG/Public/Components/CanvasPanelSlot.h"
-#include <assert.h>
 
 //#define DEBUG_LINE
 #ifdef DEBUG_LINE
@@ -86,13 +85,15 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	assert(GetControlledTank() != nullptr);
+	ensure(GetControlledTank() != nullptr);
 
 	//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController HitLocation: %s"), *HitLocation.ToString);
 
 	// get world locaton of linetrace through crosshair
 	FVector OutHitLocation;
-	if (CalcSightRayHitLocation(OutHitLocation))
+	bool isHit = CalcSightRayHitLocation(OutHitLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController isHit: %i"), isHit);
+	if (isHit)
 	{
 		UTankAimingComponent* TankAimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
 
@@ -166,7 +167,13 @@ bool ATankPlayerController::CalcSightRayHitLocation(FVector& OutHitLocation) con
 		}
 		else
 		{
-			OutHitLocation = FVector(0.0f);
+			// if there is not hit location (e.g aiming to the sky)
+			// we compute a far away point in the world in the direction of the camera
+			FVector CameraLocation;
+			FVector CameraDirection;
+			DeprojectScreenPositionToWorld(CrosshairScreenPos.X, CrosshairScreenPos.Y, CameraLocation, CameraDirection);
+			OutHitLocation = FVector(CameraLocation + CameraDirection * 10000.0f);
+			//OutHitLocation = FVector(0.0f);
 
 			//UE_LOG(LogTemp, Warning, TEXT("TankPlayerController we missed: %s"), *(OutHitLocation.ToString()));
 		}

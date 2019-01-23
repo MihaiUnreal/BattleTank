@@ -15,7 +15,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 // Holds Tank Aiming info like barrel properties and methods
@@ -36,11 +37,14 @@ public:
 
 	void AimAt(const FVector& HitLocation);
 
+	EFiringState GetFiringState() const;
+	int GetAmmoAmount() const;
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	EFiringState FiringState = EFiringState::Reloading;
 
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
@@ -48,6 +52,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float ReloadTimeInSeconds = 3.0f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Firing)
+	int AmmoAmount = 10;
 
 	float LastFireTime = 0.0f;
 

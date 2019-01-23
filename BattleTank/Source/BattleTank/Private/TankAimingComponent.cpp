@@ -74,10 +74,9 @@ void UTankAimingComponent::AimAt(const FVector& HitLocation)
 // Called from Blueprint
 void UTankAimingComponent::Fire()
 {
-	//bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
 	// Spawn a projectile at the socket location on the barrel
-	if (FiringState != EFiringState::Reloading)
+	// locked fire state for AI tanks and aiming for the player tank
+	if (FiringState == EFiringState::Locked || FiringState == EFiringState::Aiming)
 	{
 		if (ensure(Barrel))
 		{
@@ -94,6 +93,12 @@ void UTankAimingComponent::Fire()
 			}
 
 			LastFireTime = FPlatformTime::Seconds();
+
+			// update ammo amount per fire
+			if (AmmoAmount > 0)
+			{
+				AmmoAmount--;
+			}
 		}
 	}
 }
@@ -111,6 +116,13 @@ void UTankAimingComponent::MoveBarrelAndTurret(const FVector& AimDirection)
 
 		Barrel->Elevate(DeltaRotator.Pitch);
 
+		// we must guard the turret rotation info forcing it to take the shortest route
+		// meaning if the rotation delta_angle > 180 degrees, then its shorter to 
+		// to rotate - delta_angle degrees
+		if (FMath::Abs(DeltaRotator.Yaw) >= 180.0f)
+		{
+			DeltaRotator.Yaw *= -1.0f;
+		}
 		Turret->Rotate(DeltaRotator.Yaw);
 	}
 }
@@ -131,6 +143,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// update firing state
 	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
 		FiringState = EFiringState::Reloading;
@@ -143,6 +156,12 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	{
 		FiringState = EFiringState::Locked;
 	}
+
+	// update ammo state
+	if (AmmoAmount == 0)
+	{
+		FiringState = EFiringState::OutOfAmmo;
+	}
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
@@ -153,4 +172,14 @@ bool UTankAimingComponent::IsBarrelMoving()
 	}
 
 	return false;
+}
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
+}
+
+int UTankAimingComponent::GetAmmoAmount() const
+{
+	return AmmoAmount;
 }
