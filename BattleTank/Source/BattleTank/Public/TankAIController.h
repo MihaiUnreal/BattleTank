@@ -20,11 +20,17 @@ protected:
 	float AcceptanceRadius = 3000.0f; // in cm
 
 private:
+	// bind listener callback to delegate
+	UFUNCTION()
+	void OnTankDeathCB();
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetPawn(APawn* InPawn) override;
 
 	APawn* GetControlledTank() const;
 	APawn* GetPlayerTank() const;

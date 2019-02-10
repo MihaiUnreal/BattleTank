@@ -28,6 +28,10 @@ protected:
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 
 private:
+	// bind listener callback to delegate
+	UFUNCTION()
+	void OnTankDeathCB();
+
 	//void SetupUI();
 
 	// Called when the game starts or when spawned
@@ -35,6 +39,8 @@ private:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetPawn(APawn* InPawn) override;
 
 	// start the tank moving the barrel so that a shot would hit where
 	// the corsshair intersects the world

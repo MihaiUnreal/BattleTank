@@ -3,6 +3,7 @@
 #include "TankPlayerController.h"
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
+#include "Tank.h"
 
 //#include "PlayerUI.h"
 //#include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
@@ -180,6 +181,26 @@ bool ATankPlayerController::CalcSightRayHitLocation(FVector& OutHitLocation) con
 	}
 
 	return false;
+}
+
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		ATank* PossessedTank = Cast<ATank>(InPawn);
+
+		if (ensure(PossessedTank))
+		{
+			PossessedTank->OnTankDeath.AddUniqueDynamic(this, &ATankPlayerController::OnTankDeathCB);
+		}
+	}
+}
+
+void ATankPlayerController::OnTankDeathCB()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TankPlayerController TANK IS DEAD!"));
 }
 
 APawn* ATankPlayerController::GetControlledTank() const

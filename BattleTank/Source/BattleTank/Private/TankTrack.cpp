@@ -12,6 +12,8 @@ UTankTrack::UTankTrack()
 
 void UTankTrack::BeginPlay()
 {
+	Super::BeginPlay();
+
 	// register on hit delegate
 	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
 }
@@ -22,7 +24,7 @@ void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	ApplySidewaysForce();
 }
 
-// CAlled every frame
+// Called every frame
 void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	//UE_LOG(LogTemp, Warning, TEXT("TankTrack OnHit!"));

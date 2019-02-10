@@ -123,7 +123,11 @@ void UTankAimingComponent::MoveBarrelAndTurret(const FVector& AimDirection)
 		{
 			DeltaRotator.Yaw *= -1.0f;
 		}
-		Turret->Rotate(DeltaRotator.Yaw);
+
+		if (ensure(Turret))
+		{
+			Turret->Rotate(DeltaRotator.Yaw);
+		}
 	}
 }
 
@@ -168,7 +172,7 @@ bool UTankAimingComponent::IsBarrelMoving()
 {
 	if (ensure(Barrel))
 	{
-		return AimDirection.Equals(Barrel->GetForwardVector(), 0.01f);
+		return ! AimDirection.Equals(Barrel->GetForwardVector(), 0.01f);
 	}
 
 	return false;
@@ -179,7 +183,7 @@ EFiringState UTankAimingComponent::GetFiringState() const
 	return FiringState;
 }
 
-int UTankAimingComponent::GetAmmoAmount() const
+int32 UTankAimingComponent::GetAmmoAmount() const
 {
 	return AmmoAmount;
 }

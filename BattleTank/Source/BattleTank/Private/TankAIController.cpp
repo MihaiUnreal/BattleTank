@@ -3,6 +3,7 @@
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
 #include "Engine/World.h"
+#include "Tank.h"
 
 //#define DEBUG_LINE
 #ifdef DEBUG_LINE
@@ -51,11 +52,11 @@ void ATankAIController::Tick(float DeltaTime)
 		// aim towards the player tank
 		APawn* PlayerTank = GetPlayerTank();
 
-		// move towards the player
-		MoveToActor(PlayerTank, AcceptanceRadius);
-
 		if (ensure(PlayerTank))
 		{
+			// move towards the player
+			MoveToActor(PlayerTank, AcceptanceRadius);
+
 			UTankAimingComponent* TankAimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
 
 			if (ensure(TankAimingComponent))
@@ -64,6 +65,10 @@ void ATankAIController::Tick(float DeltaTime)
 
 				if (TankAimingComponent->GetFiringState() == EFiringState::Locked)
 				{
+					int fs = (int)TankAimingComponent->GetFiringState();
+
+					//UE_LOG(LogTemp, Warning, TEXT("TankAIController FiringState - %i"), fs);
+
 					TankAimingComponent->Fire();
 				}
 			}
@@ -73,6 +78,26 @@ void ATankAIController::Tick(float DeltaTime)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("TankAIController failed to GET the player tank!"));
 	}
+}
+
+void ATankAIController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		ATank* PossessedTank = Cast<ATank>(InPawn);
+
+		if (ensure(PossessedTank))
+		{
+			PossessedTank->OnTankDeath.AddUniqueDynamic(this, &ATankAIController::OnTankDeathCB);
+		}
+	}
+}
+
+void ATankAIController::OnTankDeathCB()
+{
+	UE_LOG(LogTemp, Warning, TEXT("TankAIController TANK IS DEAD!"));
 }
 
 APawn* ATankAIController::GetControlledTank() const

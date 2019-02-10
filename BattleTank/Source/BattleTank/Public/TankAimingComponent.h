@@ -38,7 +38,7 @@ public:
 	void AimAt(const FVector& HitLocation);
 
 	EFiringState GetFiringState() const;
-	int GetAmmoAmount() const;
+	int32 GetAmmoAmount() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = State)
@@ -48,13 +48,13 @@ protected:
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 4000;
+	float LaunchSpeed = 4000.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
 	float ReloadTimeInSeconds = 3.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Firing)
-	int AmmoAmount = 10;
+	int32 AmmoAmount = 10;
 
 	float LastFireTime = 0.0f;
 
